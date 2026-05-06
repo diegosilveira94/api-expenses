@@ -16,11 +16,11 @@ class ExpenseView {
         date,
         description,
       });
+
+      res.status(201).send(expense);
     } catch (error) {
       res.status(400).send(error.message);
     }
-
-    res.status(201).send(expense);
   }
 
   static updateAll(req, res) {
