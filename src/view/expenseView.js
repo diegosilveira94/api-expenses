@@ -1,7 +1,7 @@
-import ExpenseController from "../controller/expenseController.js";
+import ExpenseController from "../controllers/expenseController.js";
 
 class ExpenseView {
-  static create(req, res) {
+  static async create(req, res) {
     const { title, amount, category, date, description } = req.body;
 
     if (!title || !amount || !category || !date || !description) {
@@ -9,7 +9,7 @@ class ExpenseView {
     }
 
     try {
-      const expense = ExpenseController.create({
+      const expense = await ExpenseController.create({
         title,
         amount,
         category,
@@ -23,7 +23,7 @@ class ExpenseView {
     }
   }
 
-  static updateAll(req, res) {
+  static async updateAll(req, res) {
     const id = req.params.id;
     const { title, amount, category, date, description } = req.body;
 
@@ -35,7 +35,7 @@ class ExpenseView {
       res.status(400).send("All fields are required!");
     }
 
-    const expense = ExpenseController.update({
+    const expense = await ExpenseController.update({
       id,
       title,
       amount,
@@ -47,7 +47,7 @@ class ExpenseView {
     res.status(200).send(expense);
   }
 
-  static update(req, res) {
+  static async update(req, res) {
     const id = req.params.id;
     const { title, amount, category, date, description } = req.body;
 
@@ -55,7 +55,7 @@ class ExpenseView {
       res.status(404).send("No expense found.");
     }
 
-    const expense = ExpenseController.update({
+    const expense = await ExpenseController.update({
       id,
       title,
       amount,
@@ -67,8 +67,8 @@ class ExpenseView {
     res.status(200).send(expense);
   }
 
-  static getAll(req, res) {
-    const expenses = ExpenseController.getAll();
+  static async getAll(req, res) {
+    const expenses = await ExpenseController.getAll();
 
     if (!expenses) {
       res.status(404).send("There aren't any expenses");
@@ -77,9 +77,9 @@ class ExpenseView {
     res.status(200).send(expenses);
   }
 
-  static getById(req, res) {
+  static async getById(req, res) {
     const id = req.params.id;
-    const expense = ExpenseController.getById(id);
+    const expense = await ExpenseController.getById(id);
 
     if (!expense) {
       res.status(404).send("No expense found.");
@@ -88,15 +88,15 @@ class ExpenseView {
     res.status(200).send(expense);
   }
 
-  static delete(req, res) {
+  static async delete(req, res) {
     const id = req.params.id;
-    const expense = ExpenseController.getById(id);
+    const expense = await ExpenseController.getById(id);
 
     if (!expense) {
       res.status(404).send("No expense found.");
     }
 
-    ExpenseController.delete(id);
+    await ExpenseController.delete(id);
 
     res.status(204).end();
   }
