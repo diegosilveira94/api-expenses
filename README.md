@@ -9,6 +9,8 @@ API REST para gerenciamento de despesas pessoais, permitindo registrar, listar, 
 - Node.js
 - Express.js
 - PostgreSQL (via Docker)
+- Sequelize (ORM)
+- dotenv (gerenciamento de variáveis de ambiente)
 
 ## Pré-requisitos
 
@@ -60,6 +62,22 @@ Para parar o banco:
 docker compose down
 ```
 
+> Na inicialização, o Sequelize sincroniza automaticamente o model `Expense` com o banco (`sync({ alter: true })`), criando/atualizando a tabela conforme necessário.
+
+## Estrutura do projeto
+
+```
+src/
+├── config/
+│   └── database.js          # Conexão Sequelize
+├── controllers/
+│   └── expenseController.js # Middlewares
+├── models/
+│   └── expenseModel.js      # Models
+└── view/
+    └── expenseView.js       # Formatação das respostas
+```
+
 ## Rotas da API
 
 | Método | Rota             | Descrição                          |
@@ -102,10 +120,13 @@ docker compose down
 ## Regras de negócio
 
 - `title` é obrigatório
+- `amount` deve ser um número positivo
 - `id` é gerado automaticamente
 
 ## Referências
 
 - [Express.js Documentation](https://expressjs.com/)
+- [Sequelize Documentation](https://sequelize.org/)
+- [Docker Documentation](https://docs.docker.com/)
 - [Rest API Tutorial](https://www.restapitutorial.com/)
 - [MDN](https://developer.mozilla.org)
