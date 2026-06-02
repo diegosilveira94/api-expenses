@@ -2,19 +2,19 @@ import ExpenseController from "../controllers/expenseController.js";
 
 class ExpenseView {
   static async create(req, res) {
-    const { title, amount, category, date, description } = req.body;
+    const { title, amount, date, description, categoryId } = req.body;
 
-    if (!title || !amount || !category || !date || !description) {
-      res.status(400).send("All fields are required!");
-    }
+    // if (!title || !amount || !category || !date || !description) {
+    //   res.status(400).send("All fields are required!");
+    // }
 
     try {
       const expense = await ExpenseController.create({
         title,
         amount,
-        category,
         date,
         description,
+        categoryId,
       });
 
       res.status(201).send(expense);

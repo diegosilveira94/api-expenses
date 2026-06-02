@@ -1,24 +1,19 @@
-import e from "express";
 import Expense from "../models/expenseModel.js";
 
 class ExpenseController {
-  static async create({ title, amount, category, date, description }) {
-    if (amount < 0) {
-      throw new Error("Amount must be a positive number");
-    }
-
-    const expense = await Expense.create({
+  static async create({ title, amount, date, description, categoryId }) {
+    const result = await Expense.createExpense({
       title,
       amount,
-      category,
       date,
       description,
+      categoryId,
     });
 
-    return expense;
+    return result;
   }
 
-  static async update({ id, title, amount, category, date, description }) {
+  static async update({ id, title, amount, date, description }) {
     if (amount < 0) {
       throw new Error("Amount must be a positive number");
     }
@@ -28,7 +23,6 @@ class ExpenseController {
       id,
       title: title ? title : expense.title,
       amount: amount ? amount : expense.amount,
-      category: category ? category : expense.category,
       date: date ? date : expense.date,
       description: description ? description : expense.description,
     };
@@ -37,7 +31,6 @@ class ExpenseController {
       {
         title: updatedExpense.title,
         amount: updatedExpense.amount,
-        category: updatedExpense.category,
         date: updatedExpense.date,
         description: updatedExpense.description,
       },

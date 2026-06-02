@@ -1,7 +1,34 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 import { sequelize } from "../config/database.js";
 
-class Expense extends Model {}
+class Expense extends Model {
+  static async getAll() {
+    return await Expense.findAll({ include: Category });
+  }
+
+  static async getById(id) {
+    return await Expense.findByPk(id);
+  }
+
+  static async createExpense({ title, amount, date, description, categoryId }) {
+    if (amount < 0) {
+      throw new Error("Amount must be a positive number");
+    }
+
+    if (!title) {
+      throw new Error("The title field is required.");
+    }
+
+    return await Expense.create({
+      title,
+      amount,
+      date,
+      description,
+      categoryId,
+    });
+  }
+}
+
 Expense.init(
   {
     id: {
@@ -19,9 +46,6 @@ Expense.init(
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
-    category: {
-      type: DataTypes.STRING,
-    },
     date: {
       type: DataTypes.DATEONLY,
     },
@@ -38,8 +62,5 @@ Expense.init(
     modelName: "Expense",
   },
 );
-
-await Expense.sync({ alter: true });
-console.info("The table for the Expense Model was just (re)created!");
 
 export default Expense;
