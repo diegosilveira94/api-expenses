@@ -7,7 +7,7 @@ class Category extends Model {
   }
 
   static async getById(id) {
-    return await Category.findByPk(id);
+    return await Category.findByPk(id, { include: Expense });
   }
 
   static async createCategory({ name, description }) {

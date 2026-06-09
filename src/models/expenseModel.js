@@ -1,5 +1,6 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 import { sequelize } from "../config/database.js";
+import Category from "./categoryModel.js";
 
 class Expense extends Model {
   static async getAll() {

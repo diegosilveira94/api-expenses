@@ -8,6 +8,14 @@ class CategoryController {
   static async update({ id, name, description }) {
     return await Category.updateCategory({ id, name, description });
   }
+
+  static async getAll() {
+    return await Category.getAll();
+  }
+
+  static async getById(id) {
+    return await Category.getById(id);
+  }
 }
 
 export default CategoryController;

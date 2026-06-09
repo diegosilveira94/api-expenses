@@ -81,6 +81,8 @@ class ExpenseView {
     const id = req.params.id;
     const expense = await ExpenseController.getById(id);
 
+    await console.info("EXPENSE FULL: ", expense);
+
     if (!expense) {
       res.status(404).send("No expense found.");
     }
