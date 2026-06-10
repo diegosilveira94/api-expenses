@@ -30,6 +30,10 @@ class CategoryView {
     const id = req.params.id;
     const category = await CategoryView.getById(id);
 
+    if (!id) {
+      res.status(400).send("The id field is required.");
+    }
+
     if (!category) {
       res.status(404).send("No category found.");
     }

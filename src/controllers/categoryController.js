@@ -2,6 +2,9 @@ import Category from "../models/categoryModel.js";
 
 class CategoryController {
   static async create({ name, description }) {
+    if (!name) {
+      throw new Error("The name field is required.");
+    }
     return await Category.createCategory({ name, description });
   }
 

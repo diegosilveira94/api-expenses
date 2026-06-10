@@ -5,6 +5,8 @@ import "./models/categoryModel.js";
 import "./models/associations.js";
 import ExpenseView from "./view/expenseView.js";
 import CategoryView from "./view/categoryView.js";
+import UserView from "./view/userView.js";
+import userRoutes from "./routes/userRoutes.js";
 
 await sequelize.sync({ alter: true });
 console.info("Database synchronized.");
@@ -12,6 +14,8 @@ console.info("Database synchronized.");
 const PORT = 3000;
 
 const app = express();
+app.use(express.json());
+app.use("/api", userRoutes);
 
 app.use(express.json());
 app.get("/api/expenses", ExpenseView.getAll);
