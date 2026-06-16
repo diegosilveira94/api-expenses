@@ -3,30 +3,23 @@ import { sequelize } from "./config/database.js";
 import "./models/expenseModel.js";
 import "./models/categoryModel.js";
 import "./models/associations.js";
-import ExpenseView from "./view/expenseView.js";
-import CategoryView from "./view/categoryView.js";
-import UserView from "./view/userView.js";
+import ExpenseView from "./views/expenseView.js";
+import CategoryView from "./views/categoryView.js";
+import UserView from "./views/userView.js";
 import userRoutes from "./routes/userRoutes.js";
-
-await sequelize.sync({ alter: true });
-console.info("Database synchronized.");
+import expenseRoutes from "./routes/expenseRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
 
 const PORT = 3000;
 
 const app = express();
 app.use(express.json());
 app.use("/api", userRoutes);
+app.use("/api", expenseRoutes);
+app.use("/api", categoryRoutes);
 
-app.use(express.json());
-app.get("/api/expenses", ExpenseView.getAll);
-app.get("/api/categories", CategoryView.getAll);
-app.get("/api/expenses/:id", ExpenseView.getById);
-app.get("/api/categories/:id", CategoryView.getById);
-app.post("/api/expenses", ExpenseView.create);
-app.post("/api/categories", CategoryView.create);
-app.put("/api/expenses/:id", ExpenseView.updateAll);
-app.patch("/api/expenses/:id", ExpenseView.update);
-app.delete("/api/expenses/:id", ExpenseView.delete);
+await sequelize.sync({ alter: true });
+console.info("Database synchronized.");
 
 const server = app.listen(PORT, () => {
   console.log(`Server running in http://localhost:${PORT} 🤫`);

@@ -19,6 +19,10 @@ class CategoryController {
   static async getById(id) {
     return await Category.getById(id);
   }
+
+  static async delete(id) {
+    return await Category.deleteCategory(id);
+  }
 }
 
 export default CategoryController;

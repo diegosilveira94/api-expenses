@@ -2,19 +2,20 @@ import ExpenseController from "../controllers/expenseController.js";
 
 class ExpenseView {
   static async create(req, res) {
-    const { title, amount, date, description, categoryId } = req.body;
+    const { description, amount, date, status, categoryId, userId } = req.body;
 
-    // if (!title || !amount || !category || !date || !description) {
-    //   res.status(400).send("All fields are required!");
-    // }
+    if (!description || !amount || !categoryId || !date || !status || !userId) {
+      res.status(400).send("All fields are required!");
+    }
 
     try {
       const expense = await ExpenseController.create({
-        title,
+        description,
         amount,
         date,
-        description,
+        status,
         categoryId,
+        userId,
       });
 
       res.status(201).send(expense);
@@ -23,25 +24,25 @@ class ExpenseView {
     }
   }
 
-  static async updateAll(req, res) {
+  static async updateAllFields(req, res) {
     const id = req.params.id;
-    const { title, amount, category, date, description } = req.body;
+    const { description, amount, date, status, categoryId } = req.body;
 
     if (!ExpenseController.existsExpense(id)) {
       res.status(404).send("No expense found.");
     }
 
-    if (!title || !amount || !category || !date || !description) {
+    if (!amount || !categoryId || !date || !description || !status) {
       res.status(400).send("All fields are required!");
     }
 
     const expense = await ExpenseController.update({
       id,
-      title,
-      amount,
-      category,
-      date,
       description,
+      amount,
+      status,
+      categoryId,
+      date,
     });
 
     res.status(200).send(expense);
@@ -49,7 +50,7 @@ class ExpenseView {
 
   static async update(req, res) {
     const id = req.params.id;
-    const { title, amount, category, date, description } = req.body;
+    const { description, amount, date, status, categoryId } = req.body;
 
     if (!ExpenseController.existsExpense(id)) {
       res.status(404).send("No expense found.");
@@ -57,11 +58,11 @@ class ExpenseView {
 
     const expense = await ExpenseController.update({
       id,
-      title,
-      amount,
-      category,
-      date,
       description,
+      amount,
+      status,
+      categoryId,
+      date,
     });
 
     res.status(200).send(expense);
@@ -80,8 +81,6 @@ class ExpenseView {
   static async getById(req, res) {
     const id = req.params.id;
     const expense = await ExpenseController.getById(id);
-
-    await console.info("EXPENSE FULL: ", expense);
 
     if (!expense) {
       res.status(404).send("No expense found.");
