@@ -1,4 +1,5 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
+import bcrypt from "bcrypt";
 import { sequelize } from "../config/database.js";
 
 class User extends Model {
@@ -8,7 +9,7 @@ class User extends Model {
     if (!user) {
       throw new Error("User not found");
     }
-    if (user.password !== password) {
+    if (!(await bcrypt.compare(password, user.password))) {
       throw new Error("Invalid password");
     }
 
@@ -99,6 +100,13 @@ User.init(
   {
     sequelize,
     modelName: "User",
+    hooks: {
+      beforeSave: async (user) => {
+        if (user.changed("password")) {
+          user.password = await bcrypt.hash(user.password, 10);
+        }
+      },
+    },
   },
 );
 
