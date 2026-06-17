@@ -1,4 +1,4 @@
-import User from '../Users/userUser.js';
+import User from '../models/userModel.js';
 import jwt from 'jsonwebtoken';
 import authConfig from '../config/auth.js';
 
@@ -8,8 +8,8 @@ class UserController {
     }
 
     mapUser(user) {
-        const userData = user.dataValues || user; // Para lidar com instâncias do Sequelize ou objetos simples
-        
+        const userData = user.dataValues || user;
+
         return {
             ...userData,
             password: this.replacePassword(userData.password)
@@ -41,7 +41,7 @@ class UserController {
         }
 
         const user = await User.createUser(email, password, name);
-        return { ...user, password: this.replacePassword(user.password) };
+        return this.mapUser(user);
     }
 
     async login(email, password) {
@@ -62,13 +62,13 @@ class UserController {
             user: this.mapPublicUser(user)
         };
     }
-    
+
     async getById(id) {
         const user = await User.getUserById(id);
 
         return this.mapUser(user);
     }
-    
+
     async update(id, email, password, name) {
         if (password.length < 6) {
             throw new Error('Password must contain at least 6 characters');
@@ -79,10 +79,10 @@ class UserController {
         }
 
         const user = await User.updateUser(id, email, password, name);
-        
-        return { ...user, password: this.replacePassword(user.password) };
+
+        return this.mapUser(user);
     }
-    
+
     async delete(id) {
         return await User.deleteUser(id);
     }
