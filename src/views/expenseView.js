@@ -4,8 +4,8 @@ class ExpenseView {
   static async create(req, res) {
     const { description, amount, date, status, categoryId, userId } = req.body;
 
-    if (!description || !amount || !categoryId || !date || !status || !userId) {
-      res.status(400).send("All fields are required!");
+    if (!description || !amount || !categoryId || !date || status == null || !userId) {
+      return res.status(400).send("All fields are required!");
     }
 
     try {
@@ -28,78 +28,99 @@ class ExpenseView {
     const id = req.params.id;
     const { description, amount, date, status, categoryId } = req.body;
 
-    if (!ExpenseController.existsExpense(id)) {
-      res.status(404).send("No expense found.");
+    if (!await ExpenseController.existsExpense(id)) {
+      return res.status(404).send("No expense found.");
     }
 
-    if (!amount || !categoryId || !date || !description || !status) {
-      res.status(400).send("All fields are required!");
+    if (!amount || !categoryId || !date || !description || status == null) {
+      return res.status(400).send("All fields are required!");
     }
 
-    const expense = await ExpenseController.update({
-      id,
-      description,
-      amount,
-      status,
-      categoryId,
-      date,
-    });
+    try {
+      const expense = await ExpenseController.update({
+        id,
+        description,
+        amount,
+        status,
+        categoryId,
+        date,
+      });
 
-    res.status(200).send(expense);
+      res.status(200).send(expense);
+    } catch (error) {
+      res.status(400).send(error.message);
+    }
   }
 
   static async update(req, res) {
     const id = req.params.id;
     const { description, amount, date, status, categoryId } = req.body;
 
-    if (!ExpenseController.existsExpense(id)) {
-      res.status(404).send("No expense found.");
+    if (!await ExpenseController.existsExpense(id)) {
+      return res.status(404).send("No expense found.");
     }
 
-    const expense = await ExpenseController.update({
-      id,
-      description,
-      amount,
-      status,
-      categoryId,
-      date,
-    });
+    try {
+      const expense = await ExpenseController.update({
+        id,
+        description,
+        amount,
+        status,
+        categoryId,
+        date,
+      });
 
-    res.status(200).send(expense);
+      res.status(200).send(expense);
+    } catch (error) {
+      res.status(400).send(error.message);
+    }
   }
 
   static async getAll(req, res) {
-    const expenses = await ExpenseController.getAll();
+    try {
+      const expenses = await ExpenseController.getAll();
 
-    if (!expenses) {
-      res.status(404).send("There aren't any expenses");
+      if (!expenses) {
+        return res.status(404).send("There aren't any expenses");
+      }
+
+      res.status(200).send(expenses);
+    } catch (error) {
+      res.status(500).send(error.message);
     }
-
-    res.status(200).send(expenses);
   }
 
   static async getById(req, res) {
     const id = req.params.id;
-    const expense = await ExpenseController.getById(id);
 
-    if (!expense) {
-      res.status(404).send("No expense found.");
+    try {
+      const expense = await ExpenseController.getById(id);
+
+      if (!expense) {
+        return res.status(404).send("No expense found.");
+      }
+
+      res.status(200).send(expense);
+    } catch (error) {
+      res.status(500).send(error.message);
     }
-
-    res.status(200).send(expense);
   }
 
   static async delete(req, res) {
     const id = req.params.id;
-    const expense = await ExpenseController.getById(id);
 
-    if (!expense) {
-      res.status(404).send("No expense found.");
+    try {
+      const expense = await ExpenseController.getById(id);
+
+      if (!expense) {
+        return res.status(404).send("No expense found.");
+      }
+
+      await ExpenseController.delete(id);
+      res.status(204).end();
+    } catch (error) {
+      res.status(500).send(error.message);
     }
-
-    await ExpenseController.delete(id);
-
-    res.status(204).end();
   }
 }
 

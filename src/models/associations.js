@@ -5,5 +5,5 @@ import User from "./userModel.js";
 Category.hasMany(Expense, { foreignKey: "categoryId" });
 Expense.belongsTo(Category, { foreignKey: "categoryId" });
 
-User.hasMany(Category, { foreignKey: "userId" });
+User.hasMany(Expense, { foreignKey: "userId" });
 Expense.belongsTo(User, { foreignKey: "userId" });
