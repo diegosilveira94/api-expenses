@@ -58,9 +58,9 @@ Expense.init(
       defaultValue: DataTypes.NOW,
     },
     status: {
-      type: DataTypes.BOOLEAN,
+      type: DataTypes.ENUM("PENDENTE", "PAGA"),
       allowNull: false,
-      defaultValue: false,
+      defaultValue: "PENDENTE",
     },
   },
   {

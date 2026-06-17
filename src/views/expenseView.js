@@ -1,11 +1,19 @@
 import ExpenseController from "../controllers/expenseController.js";
 
+const STATUS_VALUES = ["PENDENTE", "PAGA"];
+
+const isValidStatus = (status) => status == null || STATUS_VALUES.includes(status);
+
 class ExpenseView {
   static async create(req, res) {
     const { description, amount, date, status, categoryId, userId } = req.body;
 
-    if (!description || !amount || !categoryId || !date || status == null || !userId) {
+    if (!description || !amount || !categoryId || !date || !userId) {
       return res.status(400).send("All fields are required!");
+    }
+
+    if (!isValidStatus(status)) {
+      return res.status(400).send("Status must be 'PENDENTE' or 'PAGA'.");
     }
 
     try {
@@ -36,6 +44,10 @@ class ExpenseView {
       return res.status(400).send("All fields are required!");
     }
 
+    if (!isValidStatus(status)) {
+      return res.status(400).send("Status must be 'PENDENTE' or 'PAGA'.");
+    }
+
     try {
       const expense = await ExpenseController.update({
         id,
@@ -58,6 +70,10 @@ class ExpenseView {
 
     if (!await ExpenseController.existsExpense(id)) {
       return res.status(404).send("No expense found.");
+    }
+
+    if (!isValidStatus(status)) {
+      return res.status(400).send("Status must be 'PENDENTE' or 'PAGA'.");
     }
 
     try {
