@@ -1,29 +1,19 @@
 import User from '../models/userModel.js';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import authConfig from '../config/auth.js';
 
 class UserController {
-    static replacePassword(password) {
-        return '*'.repeat(password.length);
-    }
-
     static mapUser(user) {
-        const userData = user.dataValues || user;
+        const { password, ...safe } = user.dataValues || user;
 
-        return {
-            ...userData,
-            password: UserController.replacePassword(userData.password)
-        };
+        return safe;
     }
 
     static mapPublicUser(user) {
-        const mapped = UserController.mapUser(user);
+        const { id, email, name } = UserController.mapUser(user);
 
-        return {
-            id: mapped.id,
-            email: mapped.email,
-            name: mapped.name
-        };
+        return { id, email, name };
     }
 
     static async getAll() {
@@ -41,13 +31,13 @@ class UserController {
         }
 
         const user = await User.createUser(email, password, name);
-        return { ...user, password: UserController.replacePassword(user.password) };
+        return UserController.mapUser(user);
     }
 
     static async login(email, password) {
         const user = await User.getUserByEmail(email);
 
-        if (!user || user.password !== password) {
+        if (!user || !(await bcrypt.compare(password, user.password))) {
             throw new Error('Invalid credentials.');
         }
 
@@ -80,7 +70,7 @@ class UserController {
 
         const user = await User.updateUser(id, email, password, name);
 
-        return { ...user, password: UserController.replacePassword(user.password) };
+        return UserController.mapUser(user);
     }
 
     static async delete(id) {
