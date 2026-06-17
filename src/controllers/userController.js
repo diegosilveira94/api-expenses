@@ -3,21 +3,21 @@ import jwt from 'jsonwebtoken';
 import authConfig from '../config/auth.js';
 
 class UserController {
-    replacePassword(password) {
+    static replacePassword(password) {
         return '*'.repeat(password.length);
     }
 
-    mapUser(user) {
+    static mapUser(user) {
         const userData = user.dataValues || user;
 
         return {
             ...userData,
-            password: this.replacePassword(userData.password)
+            password: UserController.replacePassword(userData.password)
         };
     }
 
-    mapPublicUser(user) {
-        const mapped = this.mapUser(user);
+    static mapPublicUser(user) {
+        const mapped = UserController.mapUser(user);
 
         return {
             id: mapped.id,
@@ -26,12 +26,12 @@ class UserController {
         };
     }
 
-    async getAll() {
+    static async getAll() {
         return (await User.getAllUsers())
-            .map(u => this.mapUser(u));
+            .map(u => UserController.mapUser(u));
     }
 
-    async create(email, password, name) {
+    static async create(email, password, name) {
         if (password.length < 6) {
             throw new Error('The password must contain at least 6 characters');
         }
@@ -41,10 +41,10 @@ class UserController {
         }
 
         const user = await User.createUser(email, password, name);
-        return this.mapUser(user);
+        return { ...user, password: UserController.replacePassword(user.password) };
     }
 
-    async login(email, password) {
+    static async login(email, password) {
         const user = await User.getUserByEmail(email);
 
         if (!user || user.password !== password) {
@@ -59,17 +59,17 @@ class UserController {
 
         return {
             token,
-            user: this.mapPublicUser(user)
+            user: UserController.mapPublicUser(user)
         };
     }
 
-    async getById(id) {
+    static async getById(id) {
         const user = await User.getUserById(id);
 
-        return this.mapUser(user);
+        return UserController.mapUser(user);
     }
 
-    async update(id, email, password, name) {
+    static async update(id, email, password, name) {
         if (password.length < 6) {
             throw new Error('Password must contain at least 6 characters');
         }
@@ -80,10 +80,10 @@ class UserController {
 
         const user = await User.updateUser(id, email, password, name);
 
-        return this.mapUser(user);
+        return { ...user, password: UserController.replacePassword(user.password) };
     }
 
-    async delete(id) {
+    static async delete(id) {
         return await User.deleteUser(id);
     }
 }
