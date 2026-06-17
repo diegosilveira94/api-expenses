@@ -1,38 +1,42 @@
 import Expense from "../models/expenseModel.js";
 
 class ExpenseController {
-  static async create({ title, amount, date, description, categoryId }) {
+  static async create({
+    description,
+    amount,
+    date,
+    status,
+    categoryId,
+    userId,
+  }) {
     const result = await Expense.createExpense({
-      title,
       amount,
       date,
       description,
       categoryId,
+      status,
+      userId,
     });
 
     return result;
   }
 
-  static async update({ id, title, amount, date, description }) {
-    if (amount < 0) {
-      throw new Error("Amount must be a positive number");
-    }
-
+  static async update({ id, description, amount, date, status }) {
     const expense = await Expense.findByPk(id);
     const updatedExpense = {
       id,
-      title: title ? title : expense.title,
       amount: amount ? amount : expense.amount,
       date: date ? date : expense.date,
       description: description ? description : expense.description,
+      status: status ? status : expense.status,
     };
 
-    Expense.update(
+    await Expense.update(
       {
-        title: updatedExpense.title,
         amount: updatedExpense.amount,
         date: updatedExpense.date,
         description: updatedExpense.description,
+        status: updatedExpense.status,
       },
       {
         where: {
@@ -53,7 +57,7 @@ class ExpenseController {
   }
 
   static async delete(id) {
-    return await Expense.destroy(id);
+    return await Expense.destroy({ where: { id } });
   }
 
   static async existsExpense(id) {

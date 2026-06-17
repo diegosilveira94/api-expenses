@@ -1,4 +1,4 @@
-import { DataTypes, Model, Sequelize } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/database.js";
 import Category from "./categoryModel.js";
 
@@ -11,21 +11,25 @@ class Expense extends Model {
     return await Expense.findByPk(id);
   }
 
-  static async createExpense({ title, amount, date, description, categoryId }) {
+  static async createExpense({
+    description,
+    amount,
+    date,
+    status,
+    categoryId,
+    userId,
+  }) {
     if (amount < 0) {
       throw new Error("Amount must be a positive number");
     }
 
-    if (!title) {
-      throw new Error("The title field is required.");
-    }
-
     return await Expense.create({
-      title,
       amount,
       date,
       description,
+      status,
       categoryId,
+      userId,
     });
   }
 }
@@ -38,10 +42,6 @@ Expense.init(
       allowNull: false,
       primaryKey: true,
       unique: true,
-    },
-    title: {
-      type: DataTypes.STRING,
-      allowNull: false,
     },
     amount: {
       type: DataTypes.DECIMAL(10, 2),
@@ -56,6 +56,11 @@ Expense.init(
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
+    },
+    status: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
   },
   {
