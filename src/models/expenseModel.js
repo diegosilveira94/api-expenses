@@ -19,10 +19,6 @@ class Expense extends Model {
     categoryId,
     userId,
   }) {
-    if (amount < 0) {
-      throw new Error("Amount must be a positive number");
-    }
-
     return await Expense.create({
       amount,
       date,
@@ -46,6 +42,9 @@ Expense.init(
     amount: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
+      validate: {
+        min: 0,
+      },
     },
     date: {
       type: DataTypes.DATEONLY,
@@ -61,6 +60,12 @@ Expense.init(
       type: DataTypes.ENUM("PENDENTE", "PAGA"),
       allowNull: false,
       defaultValue: "PENDENTE",
+      validate: {
+        isIn: {
+          args: [["PENDENTE", "PAGA"]],
+          msg: "Status must be 'PENDENTE' or 'PAGA'",
+        },
+      },
     },
   },
   {

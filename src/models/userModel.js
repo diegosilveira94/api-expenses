@@ -9,6 +9,7 @@ class User extends Model {
     if (!user) {
       throw new Error("User not found");
     }
+
     if (!(await bcrypt.compare(password, user.password))) {
       throw new Error("Invalid password");
     }
@@ -59,11 +60,21 @@ class User extends Model {
     return true;
   }
 
-  static async getAll() { return await User.getAllUsers(); }
-  static async create(email, password, name) { return await User.createUser(email, password, name); }
-  static async getById(id) { return await User.getUserById(id); }
-  static async update(id, email, password, name) { return await User.updateUser(id, email, password, name); }
-  static async delete(id) { return await User.deleteUser(id); }
+  static async getAll() {
+    return await User.getAllUsers();
+  }
+  static async create(email, password, name) {
+    return await User.createUser(email, password, name);
+  }
+  static async getById(id) {
+    return await User.getUserById(id);
+  }
+  static async update(id, email, password, name) {
+    return await User.updateUser(id, email, password, name);
+  }
+  static async delete(id) {
+    return await User.deleteUser(id);
+  }
 }
 
 User.init(
@@ -77,14 +88,24 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
+      validate: {
+        isEmail: true,
+        notEmpty: true,
+      },
     },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     createdAt: {
       type: DataTypes.DATE,
