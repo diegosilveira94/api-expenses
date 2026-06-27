@@ -21,47 +21,31 @@ class ExpenseController {
     return result;
   }
 
-  static async update({ id, description, amount, date, status }) {
-    const expense = await Expense.findByPk(id);
-    const updatedExpense = {
-      id,
-      amount: amount ? amount : expense.amount,
-      date: date ? date : expense.date,
-      description: description ? description : expense.description,
-      status: status ? status : expense.status,
-    };
+  static async update({ id, description, amount, date, status, userId }) {
+    const expense = await Expense.findOne({ where: { id, userId } });
 
-    await Expense.update(
-      {
-        amount: updatedExpense.amount,
-        date: updatedExpense.date,
-        description: updatedExpense.description,
-        status: updatedExpense.status,
-      },
-      {
-        where: {
-          id: id,
-        },
-      },
-    );
+    if (!expense) return null;
 
-    return updatedExpense;
+    await expense.update({
+      amount: amount ?? expense.amount,
+      date: date ?? expense.date,
+      description: description ?? expense.description,
+      status: status ?? expense.status,
+    });
+
+    return expense;
   }
 
-  static async getAll() {
-    return await Expense.findAll();
+  static async getAll({ userId }) {
+    return await Expense.findAll({ where: { userId } });
   }
 
-  static async getById(id) {
-    return await Expense.findByPk(id);
+  static async getById({ id, userId }) {
+    return await Expense.findOne({ where: { id, userId } });
   }
 
-  static async delete(id) {
-    return await Expense.destroy({ where: { id } });
-  }
-
-  static async existsExpense(id) {
-    return await Expense.findByPk(id);
+  static async delete({ id, userId }) {
+    return await Expense.destroy({ where: { id, userId } });
   }
 }
 
