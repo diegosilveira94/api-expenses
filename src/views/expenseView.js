@@ -85,7 +85,15 @@ class ExpenseView {
 
   static async getAll(req, res) {
     try {
-      const expenses = await ExpenseController.getAll({ userId: req.user.id });
+      const expenses = await ExpenseController.getAll({
+        userId: req.user.id,
+        status: req.query.status,
+        categoryId: req.query.categoryId,
+        minAmount: req.query.minAmount,
+        maxAmount: req.query.maxAmount,
+        startDate: req.query.startDate,
+        endDate: req.query.endDate,
+      });
 
       if (!expenses) {
         return res.status(404).send("There aren't any expenses");
