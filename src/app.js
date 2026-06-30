@@ -9,6 +9,7 @@ import UserView from "./views/userView.js";
 import userRoutes from "./routes/userRoutes.js";
 import expenseRoutes from "./routes/expenseRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
+import dashboardRoutes from "./routes/dashboardRoutes.js";
 
 const PORT = 3000;
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use("/api", userRoutes);
 app.use("/api", expenseRoutes);
 app.use("/api", categoryRoutes);
+app.use("/api", dashboardRoutes);
 
 await sequelize.sync({ alter: true });
 console.info("Database synchronized.");
