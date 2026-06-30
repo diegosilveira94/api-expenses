@@ -11,6 +11,8 @@ import expenseRoutes from "./routes/expenseRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import errorHandler from "./middlewares/errorHandler.js";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./config/swagger.js";
 
 const PORT = 3000;
 
@@ -20,6 +22,7 @@ app.use("/api", userRoutes);
 app.use("/api", expenseRoutes);
 app.use("/api", categoryRoutes);
 app.use("/api", dashboardRoutes);
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(errorHandler);
 
 const server = app.listen(PORT, () => {
