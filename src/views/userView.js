@@ -49,7 +49,7 @@ class UserView {
 
   static async getById(req, res) {
     try {
-      const id = Number(req.params.id);
+      const id = req.params.id;
       const user = await UserController.getById(id);
 
       res.json(user);
@@ -61,7 +61,7 @@ class UserView {
 
   static async update(req, res) {
     try {
-      const id = Number(req.params.id);
+      const id = req.params.id;
       const { email, password, name } = req.body || {};
 
       const updatedUser = await UserController.update(
@@ -83,7 +83,7 @@ class UserView {
 
   static async delete(req, res) {
     try {
-      const id = Number(req.params.id);
+      const id = req.params.id;
       const result = await UserController.delete(id);
       if (result === null) {
         return res.status(404).json({ error: "User not found" });

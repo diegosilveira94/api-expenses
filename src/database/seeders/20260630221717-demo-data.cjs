@@ -7,8 +7,10 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     const now = new Date();
     const password = await bcrypt.hash("123456", 10);
+    const userId = randomUUID();
     await queryInterface.bulkInsert("Users", [
       {
+        id: userId,
         email: "demo@demo.com",
         password,
         name: "Demo",
@@ -16,10 +18,6 @@ module.exports = {
         updatedAt: now,
       },
     ]);
-    const [users] = await queryInterface.sequelize.query(
-      `SELECT id FROM "Users" WHERE email = 'demo@demo.com';`,
-    );
-    const userId = users[0].id;
 
     const foodId = randomUUID();
     const transpId = randomUUID();
