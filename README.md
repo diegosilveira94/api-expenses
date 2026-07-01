@@ -119,63 +119,63 @@ Base: `http://localhost:3000/api`
 
 ### Auth (públicas)
 
-| Método | Rota          | Descrição                    |
-| ------ | ------------- | ---------------------------- |
-| POST   | /users        | Cadastro de usuário          |
-| POST   | /auth/login   | Login (retorna token JWT)    |
+| Método | Rota        | Descrição                 |
+| ------ | ----------- | ------------------------- |
+| POST   | /users      | Cadastro de usuário       |
+| POST   | /auth/login | Login (retorna token JWT) |
 
 ### Usuários (protegidas)
 
-| Método | Rota        | Descrição            |
-| ------ | ----------- | -------------------- |
-| GET    | /users      | Lista usuários       |
-| GET    | /users/:id  | Busca usuário por ID |
-| PUT    | /users/:id  | Atualiza usuário     |
-| DELETE | /users/:id  | Remove usuário       |
+| Método | Rota       | Descrição            |
+| ------ | ---------- | -------------------- |
+| GET    | /users     | Lista usuários       |
+| GET    | /users/:id | Busca usuário por ID |
+| PUT    | /users/:id | Atualiza usuário     |
+| DELETE | /users/:id | Remove usuário       |
 
 ### Categorias (protegidas)
 
-| Método | Rota             | Descrição              |
-| ------ | ---------------- | ---------------------- |
-| GET    | /categories      | Lista categorias       |
-| GET    | /categories/:id  | Busca categoria por ID |
-| POST   | /categories      | Cria categoria         |
-| PATCH  | /categories/:id  | Atualiza categoria     |
-| DELETE | /categories/:id  | Remove categoria       |
+| Método | Rota            | Descrição              |
+| ------ | --------------- | ---------------------- |
+| GET    | /categories     | Lista categorias       |
+| GET    | /categories/:id | Busca categoria por ID |
+| POST   | /categories     | Cria categoria         |
+| PATCH  | /categories/:id | Atualiza categoria     |
+| DELETE | /categories/:id | Remove categoria       |
 
 ### Despesas (protegidas, escopadas ao usuário logado)
 
-| Método | Rota           | Descrição                          |
-| ------ | -------------- | ---------------------------------- |
-| GET    | /expenses      | Lista as despesas do usuário       |
-| GET    | /expenses/:id  | Busca despesa por ID               |
-| POST   | /expenses      | Cria despesa                       |
-| PUT    | /expenses/:id  | Atualiza completamente             |
-| PATCH  | /expenses/:id  | Atualiza parcialmente              |
-| DELETE | /expenses/:id  | Remove despesa                     |
+| Método | Rota          | Descrição                    |
+| ------ | ------------- | ---------------------------- |
+| GET    | /expenses     | Lista as despesas do usuário |
+| GET    | /expenses/:id | Busca despesa por ID         |
+| POST   | /expenses     | Cria despesa                 |
+| PUT    | /expenses/:id | Atualiza completamente       |
+| PATCH  | /expenses/:id | Atualiza parcialmente        |
+| DELETE | /expenses/:id | Remove despesa               |
 
 O `userId` é obtido do token — não é enviado no corpo. Cada usuário só acessa as próprias despesas.
 
 ### Dashboard (protegidas, por usuário)
 
-| Método | Rota                            | Resposta                              |
-| ------ | ------------------------------- | ------------------------------------- |
-| GET    | /dashboard/total-expenses       | `{ "total": 3500.50 }`                |
-| GET    | /dashboard/expenses-count       | `{ "count": 45 }`                     |
+| Método | Rota                            | Resposta                                  |
+| ------ | ------------------------------- | ----------------------------------------- |
+| GET    | /dashboard/total-expenses       | `{ "total": 3500.50 }`                    |
+| GET    | /dashboard/expenses-count       | `{ "count": 45 }`                         |
 | GET    | /dashboard/expenses-by-category | `[{ "category": "Food", "total": 1200 }]` |
 
 ## Filtros de despesas
 
 `GET /api/expenses` aceita filtros combináveis por query string:
 
-| Parâmetro   | Descrição                        | Exemplo             |
-| ----------- | -------------------------------- | ------------------- |
-| status      | `PENDENTE` ou `PAGA`             | `?status=PAGA`      |
-| categoryId  | ID da categoria                  | `?categoryId=<uuid>`|
-| minAmount   | Valor mínimo                     | `?minAmount=10`     |
-| maxAmount   | Valor máximo                     | `?maxAmount=100`    |
-| startDate   | Data inicial (YYYY-MM-DD)        | `?startDate=2026-06-01` |
-| endDate     | Data final (YYYY-MM-DD)          | `?endDate=2026-06-30`   |
+| Parâmetro  | Descrição                 | Exemplo                 |
+| ---------- | ------------------------- | ----------------------- |
+| status     | `PENDENTE` ou `PAGA`      | `?status=PAGA`          |
+| categoryId | ID da categoria           | `?categoryId=<uuid>`    |
+| minAmount  | Valor mínimo              | `?minAmount=10`         |
+| maxAmount  | Valor máximo              | `?maxAmount=100`        |
+| startDate  | Data inicial (YYYY-MM-DD) | `?startDate=2026-06-01` |
+| endDate    | Data final (YYYY-MM-DD)   | `?endDate=2026-06-30`   |
 
 Exemplo: `GET /api/expenses?status=PAGA&minAmount=50&startDate=2026-06-01`
 
@@ -192,7 +192,11 @@ Resposta:
 ```json
 {
   "token": "eyJhbGciOiJIUzI1NiI...",
-  "user": { "id": 1, "email": "demo@demo.com", "name": "Demo" }
+  "user": {
+    "id": "d1bb8c56-217b-4a98-8df2-213c6d4007b0",
+    "email": "demo@demo.com",
+    "name": "Demo"
+  }
 }
 ```
 
@@ -201,7 +205,7 @@ Resposta:
 ```json
 {
   "description": "Supermercado",
-  "amount": 150.50,
+  "amount": 150.5,
   "date": "2026-06-10",
   "status": "PAGA",
   "categoryId": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
