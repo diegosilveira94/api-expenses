@@ -1,0 +1,368 @@
+{
+  "info": {
+    "_postman_id": "b1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e",
+    "name": "Personal Expenses",
+    "description": "Collection App de controle de despesas (Node + Express + Sequelize + PostgreSQL). Fluxo: registre um usuario, faca login (o token e salvo automaticamente em {{token}}) e use as rotas protegidas.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000/api" },
+    { "key": "token", "value": "" },
+    { "key": "userId", "value": "" },
+    { "key": "categoryId", "value": "" },
+    { "key": "expenseId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register (POST /users)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"teste@email.com\",\n  \"password\": \"123456\",\n  \"name\": \"Teste\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login (POST /auth/login)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.token) {",
+                  "  pm.collectionVariables.set('token', json.token);",
+                  "}",
+                  "if (json.user && json.user.id) {",
+                  "  pm.collectionVariables.set('userId', json.user.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"teste@email.com\",\n  \"password\": \"123456\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Usuarios",
+      "item": [
+        {
+          "name": "List users (GET /users)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"]
+            }
+          }
+        },
+        {
+          "name": "Get user by id (GET /users/:id)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "{{userId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update user (PUT /users/:id)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "{{userId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"teste@email.com\",\n  \"password\": \"123456\",\n  \"name\": \"Teste Atualizado\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete user (DELETE /users/:id)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "{{userId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categorias",
+      "item": [
+        {
+          "name": "List categories (GET /categories)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"]
+            }
+          }
+        },
+        {
+          "name": "Get category by id (GET /categories/:id)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{categoryId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create category (POST /categories)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('categoryId', json.id); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alimentacao\",\n  \"description\": \"Gastos com comida\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update category (PATCH /categories/:id)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{categoryId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alimentacao\",\n  \"description\": \"Atualizada\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete category (DELETE /categories/:id)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{categoryId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Despesas",
+      "item": [
+        {
+          "name": "List expenses (GET /expenses)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/expenses?status=PAGA&categoryId=&minAmount=&maxAmount=&startDate=&endDate=",
+              "host": ["{{baseUrl}}"],
+              "path": ["expenses"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "PAGA",
+                  "description": "PENDENTE ou PAGA"
+                },
+                { "key": "categoryId", "value": "", "disabled": true },
+                { "key": "minAmount", "value": "", "disabled": true },
+                { "key": "maxAmount", "value": "", "disabled": true },
+                {
+                  "key": "startDate",
+                  "value": "",
+                  "description": "YYYY-MM-DD",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "",
+                  "description": "YYYY-MM-DD",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get expense by id (GET /expenses/:id)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/expenses/{{expenseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["expenses", "{{expenseId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create expense (POST /expenses)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('expenseId', json.id); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/expenses",
+              "host": ["{{baseUrl}}"],
+              "path": ["expenses"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Mercado\",\n  \"amount\": 150.50,\n  \"date\": \"2026-06-01\",\n  \"status\": \"PAGA\",\n  \"categoryId\": \"{{categoryId}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update expense full (PUT /expenses/:id)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/expenses/{{expenseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["expenses", "{{expenseId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Mercado mensal\",\n  \"amount\": 200,\n  \"date\": \"2026-06-05\",\n  \"status\": \"PAGA\",\n  \"categoryId\": \"{{categoryId}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update expense partial (PATCH /expenses/:id)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/expenses/{{expenseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["expenses", "{{expenseId}}"]
+            },
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"PENDENTE\"\n}" }
+          }
+        },
+        {
+          "name": "Delete expense (DELETE /expenses/:id)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/expenses/{{expenseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["expenses", "{{expenseId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Total expenses (GET /dashboard/total-expenses)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/total-expenses",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "total-expenses"]
+            }
+          }
+        },
+        {
+          "name": "Expenses count (GET /dashboard/expenses-count)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/expenses-count",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "expenses-count"]
+            }
+          }
+        },
+        {
+          "name": "Expenses by category (GET /dashboard/expenses-by-category)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/expenses-by-category",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "expenses-by-category"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
